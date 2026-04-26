@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gender Reveal</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Georgia', serif;
+    background: linear-gradient(135deg, #fff8e7 0%, #f5e6d3 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    padding: 20px;
+  }
+
+  .container {
+    text-align: center;
+    z-index: 10;
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  /* === REVEAL BUTTON SCREEN === */
+  .intro {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    border: 3px solid #d4a574;
+  }
+
+  .intro h1 {
+    font-size: 32px;
+    color: #5d4037;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  .intro p {
+    color: #8d6e63;
+    font-size: 17px;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .reveal-btn {
+    background: linear-gradient(135deg, #d4a574 0%, #b8895a 100%);
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(184, 137, 90, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    letter-spacing: 1px;
+  }
+
+  .reveal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(184, 137, 90, 0.5);
+  }
+
+  .reveal-btn:active { transform: translateY(0); }
+
+  /* === REVEAL SCREEN === */
+  .reveal {
+    display: none;
+    animation: scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .reveal.show { display: block; }
+
+  @keyframes scaleIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .reveal h2 {
+    font-size: 24px;
+    color: #8d6e63;
+    margin-bottom: 8px;
+    font-style: italic;
+    font-weight: normal;
+  }
+
+  .big-text {
+    font-size: 80px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ec407a 0%, #f48fb1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 12px rgba(236, 64, 122, 0.2);
+    margin: 20px 0;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .heart {
+    font-size: 60px;
+    animation: pulse 1.2s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .subtitle {
+    color: #8d6e63;
+    font-size: 18px;
+    margin-top: 16px;
+    font-style: italic;
+  }
+
+  /* === CONFETTI === */
+  .confetti {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    top: -20px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @keyframes fall {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(110vh) rotate(720deg);
+      opacity: 0.8;
+    }
+  }
+
+  /* Mobile tweaks */
+  @media (max-width: 480px) {
+    .intro { padding: 36px 24px; }
+    .intro h1 { font-size: 26px; }
+    .big-text { font-size: 60px; }
+    .heart { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Initial screen -->
+  <div class="intro" id="intro">
+    <h1>A Little Surprise...</h1>
+    <p>Someone special wanted to share some exciting news with you!</p>
+    <button class="reveal-btn" onclick="reveal()">Tap to Reveal 🍼</button>
+  </div>
+
+  <!-- Reveal screen -->
+  <div class="reveal" id="reveal">
+    <h2>It's a...</h2>
+    <div class="big-text">GIRL!</div>
+    <div class="heart">💕</div>
+    <p class="subtitle">We can't wait for you to meet her!</p>
+  </div>
+</div>
+
+<script>
+  const colors = ['#ec407a', '#f48fb1', '#f8bbd0', '#aed581', '#81c784', '#c5e1a5', '#ffffff'];
+  const shapes = ['50%', '0%', '0% 50% 0% 50%']; // circle, square, leaf
+
+  function createConfetti() {
+    const piece = document.createElement('div');
+    piece.className = 'confetti';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+    const size = 8 + Math.random() * 10;
+    piece.style.width = size + 'px';
+    piece.style.height = size + 'px';
+    const duration = 3 + Math.random() * 3;
+    piece.style.animation = `fall ${duration}s linear forwards`;
+    piece.style.animationDelay = Math.random() * 0.5 + 's';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), (duration + 0.5) * 1000);
+  }
+
+  function reveal() {
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('reveal').classList.add('show');
+
+    // Big initial burst
+    for (let i = 0; i < 60; i++) createConfetti();
+
+    // Continuous confetti — runs as long as the page is open
+    setInterval(() => {
+      for (let i = 0; i < 4; i++) createConfetti();
+    }, 250);
+  }
+</script>
+
+</body>
+</html>
